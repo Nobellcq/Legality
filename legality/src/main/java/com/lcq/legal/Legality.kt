@@ -12,6 +12,7 @@ class Legality(private val application: Application, private val phase: String) 
 //    一定情况出现，failed to open /lib64/libart.so， 所以崩溃注意
 //    这里再传入一个时机，用以判断是否是用户之前，
     fun check() {
+
         if (!inited) {
             inited = true
             Log.e("wdnmd", "check: instance success")

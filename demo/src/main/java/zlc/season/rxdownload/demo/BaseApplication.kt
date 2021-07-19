@@ -20,17 +20,19 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        try {
+            val legalityClass = Class.forName("com.lcq.legal.Legality")
+            Log.e(TAG, "onCreate: $legalityClass" )
+            val method = legalityClass.getDeclaredMethod("check")
+            val constructor = legalityClass.getDeclaredConstructor(Application::class.java, String::class.java).newInstance(this, "sss");
+            method.isAccessible = true
+            method.invoke(constructor)
+        } catch (e: Exception) {
+            Log.e(TAG, "onCreate: $e`" )
+            e.printStackTrace()
+        }
         if (BuildConfig.DEBUG) {
-            try {
-                val legalityClass = Class.forName("com.lcq.legal.Legality")
-                val method = legalityClass.getDeclaredMethod("check")
-                val constructor = legalityClass.getDeclaredConstructor(Application::class.java).newInstance(this);
-                method.isAccessible = true
-                method.invoke(constructor)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+
         }
 
 

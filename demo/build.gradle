@@ -63,7 +63,7 @@ dependencies {
 
 
 //    这里就是配置开关
-    if (isCheckMode.toBoolean()) {
+    if (forceCheck.toBoolean() | !isReleaseBuildType()) {
         implementation project(path: ':legality')
     }
 
@@ -82,4 +82,13 @@ dependencies {
 
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
     implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
+}
+
+boolean isReleaseBuildType(){
+    for(String s : gradle.startParameter.taskNames) {
+        if (s.contains("Release") | s.contains("release")) {
+            return true
+        }
+    }
+    return false
 }
