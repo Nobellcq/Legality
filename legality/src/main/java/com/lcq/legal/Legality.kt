@@ -6,7 +6,7 @@ import com.swift.sandhook.xposedcompat.XposedCompat
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 
-class Legality(private val application: Application) {
+class Legality(private val application: Application, private val phase: String) {
 
 
 //    一定情况出现，failed to open /lib64/libart.so， 所以崩溃注意
@@ -15,7 +15,7 @@ class Legality(private val application: Application) {
         if (!inited) {
             inited = true
             Log.e("wdnmd", "check: instance success")
-            XposedCompat.cacheDir = application.getCacheDir();
+            XposedCompat.cacheDir = application.cacheDir;
             XposedCompat.context = application.applicationContext
             XposedCompat.classLoader = application.classLoader
             XposedCompat.isFirstApplication = true
@@ -29,13 +29,13 @@ class Legality(private val application: Application) {
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
                     super.beforeHookedMethod(param)
-                    Log.e("XposedCompat", "beforeHookedMethod: " + param.method.name)
+                    Log("beforeHookedMethod: " + param.method.name)
                 }
 
                 @Throws(Throwable::class)
                 override fun afterHookedMethod(param: MethodHookParam) {
                     super.afterHookedMethod(param)
-                    Log.e("XposedCompat", "afterHookedMethod: " + param.method.name)
+                    Log("afterHookedMethod: " + param.method.name)
                 }
             })
         } catch (e:Exception) {
@@ -43,8 +43,17 @@ class Legality(private val application: Application) {
         }
 
     }
+
+    fun Log(msg: String) {
+        if (phase == "sss") {
+            Log.e("XposedCompat_Warning", msg)
+        } else {
+            Log.e("XposedCompat", msg)
+        }
+    }
+
     companion object {
         private var inited = false
-
     }
+
 }
