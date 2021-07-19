@@ -64,7 +64,7 @@ dependencies {
 
 //    这里就是配置开关
     if (isCheckMode.toBoolean()) {
-        implementation project(path: ':legal')
+        implementation project(path: ':legality')
     }
 
 //    implementation 'com.github.ssseasonnn:RxDownload:1.0.1'
