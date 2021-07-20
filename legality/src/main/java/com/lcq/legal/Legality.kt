@@ -1,6 +1,7 @@
 package com.lcq.legal
 
 import android.app.Application
+import android.content.pm.PackageManager
 import android.util.Log
 import com.swift.sandhook.xposedcompat.XposedCompat
 import de.robv.android.xposed.XC_MethodHook
@@ -22,11 +23,16 @@ class Legality(private val application: Application, private val phase: String) 
             XposedCompat.isFirstApplication = true
         }
 
+//        checkNetWork()
+        checkPermission()
+    }
+
+    fun checkNetWork() {
         try {
             val targetClass = Class.forName("okhttp3.OkHttpClient")
             val targetMethod = "newCall"
             val targetParam = Class.forName("okhttp3.Request")
-            XposedHelpers.findAndHookMethod(targetClass, targetMethod, targetParam, object : XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(targetClass, targetMethod, null, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
                     super.beforeHookedMethod(param)
@@ -42,7 +48,33 @@ class Legality(private val application: Application, private val phase: String) 
         } catch (e:Exception) {
             e.printStackTrace()
         }
+    }
 
+    fun checkPermission() {
+        try {
+
+            val targetClass = Class.forName("android.app.Activity")
+            val targetMethod = "requestPermissions"
+            val targetParam = Class.forName("java.lang.String")
+            val targetParam1 = Class.forName("java.lang.String")
+            val targetParam2 = Class.forName("okhttp3.Request")
+
+            XposedHelpers.findAndHookMethod(targetClass, targetMethod, targetParam,targetParam, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    super.beforeHookedMethod(param)
+                    Log("beforeHookedMethod: " + param.method.name)
+                }
+
+                @Throws(Throwable::class)
+                override fun afterHookedMethod(param: MethodHookParam) {
+                    super.afterHookedMethod(param)
+                    Log("afterHookedMethod: " + param.method.name)
+                }
+            })
+        } catch (e:Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun Log(msg: String) {
